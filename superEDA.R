@@ -60,8 +60,8 @@ uniCat = function(x, xName, main) {
   print(pcts)
   cat("\n")
   bp = ggplot(data=data.frame(x)) + 
-       geom_bar(aes(x=x), stat="count", width=0.7, fill="steelblue") +
-       labs(title=main, x=xName) + theme_minimal()
+    geom_bar(aes(x=x), stat="count", width=0.7, fill="steelblue") +
+    labs(title=main, x=xName) + theme_minimal()
   print(bp)
   invisible(NULL)
 }
@@ -102,13 +102,13 @@ uniCont = function(x, xName, main) {
   # Plots
   cat("\n")
   bpt = ggplot(data=data.frame(x)) + geom_boxplot(aes(x="", y=x)) +
-        labs(title=main, x=xName) + theme_minimal()
+    labs(title=main, x=xName) + theme_minimal()
   print(bpt)
   lenX = length(x)
   hst = ggplot(data=data.frame(x)) + 
-        geom_histogram(aes(x=x), bins=min(10, max(100, lenX/10)), col="black",
-                       fill="cyan") +
-        labs(title=main, x=xName) + theme_minimal()
+    geom_histogram(aes(x=x), bins=min(10, max(100, lenX/10)), col="black",
+                   fill="cyan") +
+    labs(title=main, x=xName) + theme_minimal()
   print(hst)
   invisible(NULL)
 }
@@ -124,7 +124,7 @@ biCatCat = function(x, xName=xName, y=y, yName=yName, main=main) {
   cnts = table(x, y, exclude=NULL)
   names(dimnames(cnts)) = c(xName, yName)
   print(cnts)
-
+  
   if (sum(is.na(x)) + sum(is.na(y)) > 0) {
     pctNA = round(100 * prop.table(table(!is.na(x), !is.na(y)), margin=1),
                   digits=1)
@@ -183,4 +183,3 @@ if (exists("testingSuperEDA")) {
   superEDA(mtcars$cyl, mtcars$am, main="Motor Trend Cars")
   
 }
-

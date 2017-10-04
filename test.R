@@ -16,13 +16,15 @@ testUniCat <- function(verbose = FALSE) {
   print(actualCounts)
   print(actualPercent)
   
+
   assertCondition(actualCounts == test$counts)
   assertCondition(actualPercent == test$percent)
+  
   # Check if the barplot shows that the third bar is taller than other two,
   # and the second bar is the lowest.
   
   if (verbose) {
-    print("All UniCat tests passed!")
+    print("All tests passed!")
   }
   
 }
@@ -117,10 +119,8 @@ testBiContCat <- function(verbose = FALSE) {
     
     x <- mtcars$hp
     y <- mtcars$am
+
     test <- biContCat(x, y, xName = "Gross horsepower", yName = "Transmission", main = "BiContCat Test")
-    
-    print("\n\n\n")
-    print(test)
 
     # 1. Check if the first overlapping histogram plot exists, 
     # showing the distribution of "automatic" has a wider spead and a smaller mean.
@@ -128,6 +128,7 @@ testBiContCat <- function(verbose = FALSE) {
     # showing a bell-shaped shadow of "manual" starting from 0.25 and ending at 0.
     
     if (verbose) {
+
       print("All BiContCat tests passed!")
     }
 }

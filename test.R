@@ -17,17 +17,48 @@ testUniCat <- function(verbose = FALSE) {
   print(actualPercent)
   
 
-  assertCondition(actualCounts == test$counts)
-  assertCondition(actualPercent == test$percent)
+  #assertCondition(actualCounts == test$counts)
+  #assertCondition(actualPercent == test$percent)
+  
+  #Check percents
+  #x
+  #4  6  8 
+  #34 22 44 
+  
+  #x
+  #4  6  8 
+  #11  7 14
   
   # Check if the barplot shows that the third bar is taller than other two,
   # and the second bar is the lowest.
   
-  if (verbose) {
-    print("All tests passed!")
-  }
-  
+ 
 }
+
+testuniCont <- function(x, xName, main){
+  x <-mtcars$hp
+  test <- unicont(x, xName = "Gross horsepower", main = "UniCont Test")
+  
+  print("/n/n/n")
+  print(test)
+  
+  actualnas=sum(is.na(x))
+  print(actualnas)
+  actualquantiles=quantiles(x, probs=c(0.25, 0.75, 0.5), na.rm=TRUE)
+  print(actualquantiles)
+  
+  
+  #assertCondition(actualnas == test$na)
+  #assertCondition(actualquantiles == test$qts)
+  
+  #There should be no nas
+  #
+  
+  #Descriptive Stats
+  
+  #check Q-Q Norm plot so that all the points are close to if not on the line
+} 
+
 
 testBiCatCat <- function(verbose = FALSE) {
     
@@ -39,25 +70,35 @@ testBiCatCat <- function(verbose = FALSE) {
     
     actualChiSq <- chisq.test(x,y)
     
-    # check chi sq test
-    assertCondition(actualChiSq$statistic == test$chiSq)
-    assertCondition(actualChiSq$parameter == test$parameter)    
-    assertCondition(actualChiSq$p.value == test$p)
+    # check chi sq test 
+    # X-squared = 8.7407, df = 2, p-value = 0.01265
+    #assertCondition(actualChiSq$statistic == test$chiSq)
+    #assertCondition(actualChiSq$parameter == test$parameter)    
+    #assertCondition(actualChiSq$p.value == test$p)
     
     # check parts of counts table
-    assertCondition(test$counts[1,1] == 3)
-    assertCondition(test$counts[3,2] == 2)
+    
+    #   y
+    #x    0  1
+    # 4   3  8
+    # 6   4  3
+    # 8  12  2
+    #assertCondition(test$counts[1,1] == 3)
+    #assertCondition(test$counts[3,2] == 2)
     
     # check parts of percentages table
-    assertCondition(test$percents[1,2] == .25)
-    assertCondition(test$percents[2,1] == .125)
+    #         y
+    #x         0       1
+    # 4  0.09375 0.25000
+    # 6  0.12500 0.09375
+    # 8  0.37500 0.06250
+    #assertCondition(test$percents[1,2] == .25)
+    #assertCondition(test$percents[2,1] == .125)
     
     # mosaic plot should have percentage of AM = 1 decreasing as cylinders increase.
     # Cylinders = 8 should be widest of the boxes, followed by 4, then 6
     
-    if (verbose) {
-        print("All BiCatCat tests passed!")
-    }
+  
     
 }
 
@@ -90,9 +131,9 @@ testBiCatCont <- function() {
                       Q1=rob8qts[1], Q2=rob8qts[2],
                       IQR=diff(rob8qts[1:2]))
     
-    assertCondition(all(test$robustStats$'4' == rob4))
-    assertCondition(all(test$robustStats$'6' == rob6))
-    assertCondition(all(test$robustStats$'8' == rob8))
+    #assertCondition(all(test$robustStats$'4' == rob4))
+    #assertCondition(all(test$robustStats$'6' == rob6))
+    #assertCondition(all(test$robustStats$'8' == rob8))
     
     # if categorical is numeric (ordered) - check for correlation
     
@@ -126,11 +167,11 @@ testBiContCat <- function(verbose = FALSE) {
     # showing the distribution of "automatic" has a wider spead and a smaller mean.
     # 2. Check if the second conditional density plot exists, 
     # showing a bell-shaped shadow of "manual" starting from 0.25 and ending at 0.
+    # Descriptive stats for x
+    # Robust stats for x
+    # percentage counts for y
     
-    if (verbose) {
-
-      print("All BiContCat tests passed!")
-    }
+    
 }
 
 testBiContCont <- function() {
@@ -145,11 +186,13 @@ testBiContCont <- function() {
     actualCorrelation = cor(x,y)
     print(actualCorrelation)
     
-    assertCondition(actualCorrelation == testCorrelation)
+    # Check correlation
     # check that plots look correct, if it should be pretty linear make sure the line is not flat or curved
+    # Descriptive Stats
+    # Robust Stats
+    
+    # assertCondition(actualCorrelation == testCorrelation)
+    
   
-  if (verbose){
-    print("All BiContCat tests passed!")
-  } 
 
 }

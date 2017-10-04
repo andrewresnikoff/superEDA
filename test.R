@@ -46,17 +46,23 @@ testuniCont <- function(x, xName, main){
   print(actualnas)
   actualquantiles=quantiles(x, probs=c(0.25, 0.75, 0.5), na.rm=TRUE)
   print(actualquantiles)
+  actualmean=mean(x)
+  print(actualmean)
+  
   
   
   #assertCondition(actualnas == test$na)
   #assertCondition(actualquantiles == test$qts)
   
   #There should be no nas
-  #
-  
   #Descriptive Stats
-  
-  #check Q-Q Norm plot so that all the points are close to if not on the line
+  #range=(4,25)
+  #std=
+  #min=4
+  #max=25
+  #mean=15.4
+  # check Q-Q Norm plot so that all the points are close to if not on the line
+  # check quantiles
 } 
 
 
@@ -185,11 +191,12 @@ testBiContCont <- function() {
     
     actualCorrelation = cor(x,y)
     print(actualCorrelation)
+    print(plot(x,y))
     
     # Check correlation
     # check that plots look correct, if it should be pretty linear make sure the line is not flat or curved
-    # Descriptive Stats
-    # Robust Stats
+    # check scatter plot
+   
     
     # assertCondition(actualCorrelation == testCorrelation)
     

@@ -15,24 +15,25 @@ testUniCat <- function(verbose = FALSE) {
   actualPercent = round(100 * prop.table(actualCounts))
   print(actualCounts)
   print(actualPercent)
-  
 
+  # Non-graphical checks
+  # 1. Check percents
+  #    x
+  #    4  6  8 
+  #    34 22 44 
+  
+  # 2. Check counts
+  #    x
+  #    4  6  8 
+  #    11  7 14
+  
+  # Graphical checks
+  # 1. Check if the barplot shows that the third bar is taller than other two,
+  #    and the second bar is the lowest.
+ 
   #assertCondition(actualCounts == test$counts)
   #assertCondition(actualPercent == test$percent)
   
-  #Check percents
-  #x
-  #4  6  8 
-  #34 22 44 
-  
-  #x
-  #4  6  8 
-  #11  7 14
-  
-  # Check if the barplot shows that the third bar is taller than other two,
-  # and the second bar is the lowest.
-  
- 
 }
 
 testuniCont <- function(x, xName, main){
@@ -42,29 +43,25 @@ testuniCont <- function(x, xName, main){
   print("/n/n/n")
   print(test)
   
-  actualnas=sum(is.na(x))
-  print(actualnas)
-  actualquantiles=quantiles(x, probs=c(0.25, 0.75, 0.5), na.rm=TRUE)
-  print(actualquantiles)
-  actualmean=mean(x)
-  print(actualmean)
+  actualNa=sum(is.na(x))
+  print(actualNa)
+  actualQuantiles=quantiles(x, probs=c(0.25, 0.75, 0.5), na.rm=TRUE)
+  print(actualQuantiles)
+  actualMean=mean(x)
+  print(actualMean)
   
-  
-  
-  #assertCondition(actualnas == test$na)
-  #assertCondition(actualquantiles == test$qts)
-  
-  #There should be no nas
-  #Descriptive Stats
-  #range=(4,25)
-  #std=
-  #min=4
-  #max=25
-  #mean=15.4
-  # check Q-Q Norm plot so that all the points are close to if not on the line
-  # check quantiles
-} 
 
+  
+  # Non-graphical checks
+  # 1. Check descriptive stats
+  #    There should be no nas
+  #    min=52.0, Q1=96.5, median=123.0, Q3=180.0, max=335.0
+  #    assertCondition(actualNa == test$na)
+  #    assertCondition(actualQuantiles == test$qts)
+  
+  # Graphical checks  
+  # 1. Check Q-Q Norm plots so that all the points are close to if not on the line
+} 
 
 testBiCatCat <- function(verbose = FALSE) {
     
@@ -72,56 +69,52 @@ testBiCatCat <- function(verbose = FALSE) {
     y <- mtcars$am
     test <- biCatCat(x, y, xName = "Cylinders", yName = "AM", main = "BiCatCat Test")
     
-
-    
     actualChiSq <- chisq.test(x,y)
     
-    # check chi sq test 
-    # X-squared = 8.7407, df = 2, p-value = 0.01265
-    #assertCondition(actualChiSq$statistic == test$chiSq)
-    #assertCondition(actualChiSq$parameter == test$parameter)    
-    #assertCondition(actualChiSq$p.value == test$p)
+    # Non-graphical checks
+    # 1. Check chi sq test 
+    #    X-squared = 8.7407, df = 2, p-value = 0.01265
+    #    assertCondition(actualChiSq$statistic == test$chiSq)
+    #    assertCondition(actualChiSq$parameter == test$parameter)    
+    #    assertCondition(actualChiSq$p.value == test$p)
     
-    # check parts of counts table
+    # 2. Check parts of counts table
+    #          y
+    #    x   0  1
+    #    4   3  8
+    #    6   4  3
+    #    8  12  2
+
+    # 3. Check parts of percentages table
+    #                  y
+    #    x        0       1
+    #    4  0.09375 0.25000
+    #    6  0.12500 0.09375
+    #    8  0.37500 0.06250
     
-    #   y
-    #x    0  1
-    # 4   3  8
-    # 6   4  3
-    # 8  12  2
-    #assertCondition(test$counts[1,1] == 3)
-    #assertCondition(test$counts[3,2] == 2)
+    #    assertCondition(test$percents[1,2] == .25)
+    #    assertCondition(test$percents[2,1] == .125)
     
-    # check parts of percentages table
-    #         y
-    #x         0       1
-    # 4  0.09375 0.25000
-    # 6  0.12500 0.09375
-    # 8  0.37500 0.06250
-    #assertCondition(test$percents[1,2] == .25)
-    #assertCondition(test$percents[2,1] == .125)
-    
-    # mosaic plot should have percentage of AM = 1 decreasing as cylinders increase.
-    # Cylinders = 8 should be widest of the boxes, followed by 4, then 6
-    
-  
+    # Graphical checks
+    # 1. mosaic plot should have percentage of AM = 1 decreasing as cylinders increase.
+    #    Cylinders = 8 should be widest of the boxes, followed by 4, then 6
     
 }
 
 testBiCatCont <- function() {
 
-    x <- mtcars$cyk
+    x <- mtcars$cyl
     y <- mtcars$hp
     
-    test <- biCatCont(x, xName = "Cylinders",y = y, yName = "AM", main = "Test")
+    test <- biCatCont(x, xName = "Cylinders",y = y, yName = "Gross horsepower", main = "Test")
     
+    # Non-graphical checks
+    # 1. Check descriptive stats
+    #    assertCondition(all(test$descStats$'4' == summary(y[which(x == 4)])))
+    #    assertCondition(all(test$descStats$'6' == summary(y[which(x == 6)])))
+    #    assertCondition(all(test$descStats$'8' == summary(y[which(x == 8)])))
     
-    # check descriptive stats
-    assertCondition(all(test$descStats$'4' == summary(y[which(x == 4)])))
-    assertCondition(all(test$descStats$'6' == summary(y[which(x == 6)])))
-    assertCondition(all(test$descStats$'8' == summary(y[which(x == 8)])))
-    
-    # check robust stats
+    # 2. Check robust stats
     rob4qts <- quantile(y[which(x == 4)], probs=c(0.25, 0.75, 0.5), na.rm = TRUE)
     rob4 = data.frame(Median=rob4qts[3], 
                      Q1=rob4qts[1], Q2=rob4qts[2],
@@ -141,24 +134,22 @@ testBiCatCont <- function() {
     #assertCondition(all(test$robustStats$'6' == rob6))
     #assertCondition(all(test$robustStats$'8' == rob8))
     
-    # if categorical is numeric (ordered) - check for correlation
+    # 3. If categorical is numeric (ordered) - check for correlation
     
     if (test$isOrdered) {
-        
         ordX <- as.numeric(x)
         assertCondition(test$cor == cor(ordX, y))
         assertCondition(test$cov == cov(ordX, y))
-        
     }
     
-    # side by side boxplots should show horsepower
-    # ranges from 50-125 for 4cyl, 120-140 for 6cyl (with a boxplot outlier at 175)
-    # and 155-340 for 8cyl. The boxes (middle 50% of values) should not be overlapping
-    
-    # scatter plot should show 3 colors representing each possible number of cylinders
-    # 4 cylinders should be in black mostly towards bottom right (lower hp, higher index)
-    # 6 cylinders should be in green mostly towards bottom left (a little higher than black, straight line at 100hp)
-    # 8 cylinders in light blue above the rest, strech across entire plot
+    # Graphical checks
+    # 1. Side-by-side boxplots should show horsepower
+    #    ranges from 50-125 for 4cyl, 120-140 for 6cyl (with a boxplot outlier at 175)
+    #    and 155-340 for 8cyl. The boxes (middle 50% of values) should not be overlapping.
+    # 2. Scatter plot should show 3 colors representing each possible number of cylinders
+    #    4 cylinders should be in black mostly towards bottom right (lower hp, higher index)
+    #    6 cylinders should be in green mostly towards bottom left (a little higher than black, straight line at 100hp)
+    #    8 cylinders in light blue above the rest, strech across entire plot.
     
 }
 
@@ -169,15 +160,19 @@ testBiContCat <- function(verbose = FALSE) {
 
     test <- biContCat(x, y, xName = "Gross horsepower", yName = "Transmission", main = "BiContCat Test")
 
+    # Non-graphical checks
+    # 1. Descriptive stats for x
+    #    min=52.0, Q1=96.5, median=123.0, Q3=180.0, max=335.0
+    # 2. Percentage counts for y
+    #            y
+    #    0       1       <NA> 
+    #    0.59375 0.40625 0.00000 
+    
+    # Graphical checks
     # 1. Check if the first overlapping histogram plot exists, 
-    # showing the distribution of "automatic" has a wider spead and a smaller mean.
+    #    showing the distribution of "automatic" has a wider spead and a smaller mean.
     # 2. Check if the second conditional density plot exists, 
-    # showing a bell-shaped shadow of "manual" starting from 0.25 and ending at 0.
-    # Descriptive stats for x
-    # Robust stats for x
-    # percentage counts for y
-    
-    
+    #    showing a bell-shaped shadow of "manual" starting from 0.25 and ending at 0.
 }
 
 testBiContCont <- function() {
@@ -193,13 +188,13 @@ testBiContCont <- function() {
     print(actualCorrelation)
     print(plot(x,y))
     
-    # Check correlation
-    # check that plots look correct, if it should be pretty linear make sure the line is not flat or curved
-    # check scatter plot
-   
+    # Non-graphical checks
+    # 1. check correlation
+    #    cor(x, y) = -0.8475514
+    #    assertCondition(actualCorrelation == testCorrelation)
     
-    # assertCondition(actualCorrelation == testCorrelation)
+    # Graphical checks
+    # 1. check if the scattor plot shows that there seems to be a non-linear negative relationship.
+    # 2. check if the Q-Q plot of x and y looks approximately normal.
     
-  
-
 }

@@ -157,13 +157,14 @@ uniCont = function(x, xName, main) {
 biCatCat = function(x, xName=xName, y=y, yName=yName, main=main) {
   cat("Bivariate EDA for categorical variables", xName, "and", yName, "\n")
   
+  #cross tabulation
   cat("Counts:\n")
   cnts = table(x, y, exclude=NULL)
   names(dimnames(cnts)) = c(xName, yName)
   print(cnts)
   
   if (sum(is.na(x)) + sum(is.na(y)) > 0) {
-    pctNA = round(100 * prop.table(table(!is.na(x), !is.na(y)), margin=1),
+    pctNA = round(100 * prop.table(table(!is.na(x), !is.na(y)), "%", margin=1),
                   digits=1)
     cat("\nPercent of", yName, "missing by level of", xName, "\n")
     dimnames(pctNA) = list(c("Observed", "Missing"), 
@@ -174,7 +175,7 @@ biCatCat = function(x, xName=xName, y=y, yName=yName, main=main) {
   
   cat("\nPercent of each level of", yName, "for each level of", xName, "\n")
   cntsNoNA = table(x, y, useNA="no")
-  pcts = round(100 * prop.table(cntsNoNA, margin=1), digits=1)
+  pcts = round(100 * prop.table(cntsNoNA, margin=1), "%", digits=1)
   names(dimnames(pcts)) = c(xName, yName)
   print(pcts)
   
@@ -205,9 +206,26 @@ biCatCat = function(x, xName=xName, y=y, yName=yName, main=main) {
 }
 
 biCatCont = function(x, xName=xName, y=y, yName=yName, main=main){
+  #Cross tabulation
+  cat("Counts:\n")
+  cnts = table(x, y, exclude=NULL)
+  names(dimnames(cnts)) = c(xName, yName)
+  print(cnts)
     
-    print("Not yet implemented")
+  #robust stats
+  cat("\nRobust stats:\n")
+  qts <- quantile(x, probs=c(0.25, 0.5, 0.75), na.rm = TRUE)
+  rob = data.frame(Median=qts[2], 
+                     Q1=qts[1], Q2=qts[3],
+                     IQR=diff(qts[1:2]))
+  print(rob, row.names=FALSE)
     
+  #Plots
+  bp <- ggplot(data=data.frame) + geom_boxplot(aes(x=x, y=y)) +
+      labels(title=main, x=xName, y=yName) + theme_minimal()
+  print(bp)
+  scatterplot <- plot(x, y, xlab=xName, ylab=yName, main=main)
+  print(scatterplot)
 }
 
 biContCat = function(x, xName=xName, y=y, yName=yName, main=main){
@@ -227,6 +245,8 @@ biContCat = function(x, xName=xName, y=y, yName=yName, main=main){
 }
 
 biContCont = function(x, xName=xName, y=y, yName=yName, main=main){
+
+  
     
     print("Not yet implemented")
     

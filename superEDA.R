@@ -1,6 +1,19 @@
 # Super EDA function
 # by I. M. Buggy, Fall 2017
 
+# Helper function for percent tables
+# Taken from EDA1.pdf from 36601 by Professor Seltman
+niceTable = function(tbl, digits=1, append=" %") {     
+    if (!is.table(tbl)) stop("'tbl' is not a table")     
+    if (!is.character(append) || length(append)!=1) {       
+        stop("'append' must be a single string")     
+    }    
+    temp = formatC(tbl, digits=digits, format="f")     
+    tbl[] = paste0(formatC(tbl, digits=digits, format="f",                            
+    width = max(nchar(temp))), append)     
+    return(tbl)   
+} 
+
 # Perform EDA on an combination of one or two variables
 # EDA type depends on whether x and/or y are "factors"
 # Requires: all functions below this on in this file
@@ -50,20 +63,44 @@ dropDollar = function(txt) {
 # Make labelled output of table, proportion table, and barplot
 uniCat = function(x, xName, main) {
   cat("Univariate EDA for categorical variable", xName, "\n")
+    
+
+  # Missing values
+  na = sum(is.na(x))
+  if (na == 0) {
+    cat("There are no missing values.\n")
+  } 
+  else {
+    cat("There are ", na, " missing values (", 
+        round(100*na/length(x), digits=1), "%).\n", sep="")
+  }
+    
   cat("Counts:\n")
   cnts = table(x, exclude=NULL)
   names(dimnames(cnts)) = NULL
   print(cnts)
+  # use helper function for percent table formatting
   cat("\nPercents:\n")
-  pcts = round(100 * prop.table(cnts))
+  pcts = niceTable(cnts)
   names(dimnames(pcts)) = NULL
   print(pcts)
   cat("\n")
+  
+  # Bar Plot
+  
+  # check if levels of x are numeric
+  if (!all(grepl("^[[:digit:]]", levels(x)))) {
+      
+      # if they're not, sort the data by decreasing frequency
+      x = factor(x, levels = names(sort(table(x), decreasing=TRUE)))
+  }
+  
   bp = ggplot(data=data.frame(x)) + 
-    geom_bar(aes(x=x), stat="count", width=0.7, fill="steelblue") +
-    labs(title=main, x=xName) + theme_minimal()
+      geom_bar(aes(x=x), stat="count", width=0.7, fill="steelblue") +
+      labs(title=main, x=xName) + theme_minimal()
   print(bp)
   invisible(NULL)
+  
 }
 
 
@@ -175,7 +212,17 @@ biCatCont = function(x, xName=xName, y=y, yName=yName, main=main){
 
 biContCat = function(x, xName=xName, y=y, yName=yName, main=main){
     
-    print("Not yet implemented")
+    # overlapping density plots
+    df <- data.frame(x, y)
+    
+    ggplot(df, aes(x = x, fill = y)) + geom_density(aes(group = y), alpha = .25) + 
+        labs(title=main, x=xName) + theme_minimal()
+    
+    # if binary
+    if (nlevels(y) == 2){
+        cdplot(x, y, xlab=xName, ylab=yName, main = main) 
+    }
+    
     
 }
 
@@ -327,6 +374,7 @@ testBiContCont <- function(x,y) {
 
 # Testing
 if (exists("testingSuperEDA")) {
+    
   data(mtcars)
   mtcars = mtcars  # make a copy
   mtcars = rbind(mtcars, data.frame(mpg=20, cyl=NA, disp=NA, hp=NA, drat=NA,

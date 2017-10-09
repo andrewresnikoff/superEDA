@@ -129,14 +129,15 @@ uniCont = function(x, xName, main) {
   print(std, row.names=FALSE)
   
   # Robust stats
+  # Order updated, IQR modified
   cat("\nRobust stats:\n")
   qts = quantile(x, probs=c(0.25, 0.75, 0.5), na.rm=TRUE)
-  rob = data.frame(Median=qts[3], 
-                   Q1=qts[1], Q2=qts[2],
-                   IQR=diff(qts[1:2]))
+  rob = data.frame(Q1=qts[1], Median=qts[3], 
+                   Q3=qts[2], IQR=diff(qts[1:2]))
   print(rob, row.names=FALSE)
   
   # Plots
+  # Implemented a Q-Q plot
   cat("\n")
   bpt = ggplot(data=data.frame(x)) + geom_boxplot(aes(x="", y=x)) +
     labs(title=main, x=xName) + theme_minimal()
@@ -147,9 +148,10 @@ uniCont = function(x, xName, main) {
                    fill="cyan") +
     labs(title=main, x=xName) + theme_minimal()
   print(hst)
+  qqn = qqnorm(x, xlab=xName)
+  print(qqn)
   invisible(NULL)
 }
-
 
 
 # Bivariate EDA for categorical IV and DV
@@ -248,8 +250,20 @@ biContCont = function(x, xName=xName, y=y, yName=yName, main=main){
 
   
     
-    print("Not yet implemented")
+    df <- data.frame(x, y)
     
+    # correlation
+    cat("\nCorrelation between", xName, "and", yName, "=", cor(df)[2])
+    
+    # scatter plot with smoother curves
+    sca = ggplot(df, aes(x=x, y=y)) + geom_point(aes(x=x, y=y)) +
+            geom_smooth(method="loess", se=TRUE) +
+            labs(title=main, x=xName, y=yName) + theme_minimal()
+    print(sca)
+    
+    # qqplots
+    qqnorm(x, xlab=xName); qqline(x)
+    qqnorm(y, xlab=yName); qqline(y)
 }
 
 

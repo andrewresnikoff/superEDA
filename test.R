@@ -1,96 +1,88 @@
-# test suite for superEDA
-
-source("superEDA.R")
-if (!require("tools")){
-    library("tools")
+runAllTests <- function(mtcars) {
+    
+    # run all tests
+    testUniCat(mtcars$cyl)
+    testUniCont(mtcars$hp)
+    testBiCatCat(mtcars$cyl, mtcars$am)
+    testBiCatCont(mtcars$cyl, mtcars$hp)
+    testBiContCat(mtcars$hp, mtcars$am)
+    testBiContCont(mtcars$mpg, mtcars$disp)
+    
 }
 
-testUniCat <- function(verbose = FALSE) {
-    x = mtcars$cyl
-    test = uniCat(x, xName = "Cylinders", main = "Test")
-    print("\n\n\n")
-    print(test)
+testUniCat <- function(x) {
     
-    actualCounts = table(x, exclude = NULL)
-    actualPercent = round(100 * prop.table(actualCounts))
-    print(actualCounts)
-    print(actualPercent)
+    
+    # passes mtcars$cyl (as factor)
+    superEDA(x, main="Motor Trend Cars")
     
     # Non-graphical checks
     # 1. Check percents
     #    x
-    #    4  6  8 
-    #    34 22 44 
+    #    4  6  8  <NA>
+    #    34 22 44  1
     
     # 2. Check counts
     #    x
-    #    4  6  8 
-    #    11  7 14
+    #    4  6  8  <NA>
+    #    11  7 14  3
     
     # Graphical checks
-    # 1. Check if the barplot shows that the third bar is taller than other two,
-    #    and the second bar is the lowest.
+    # 1. Check if the barplot shows that the third bar is taller than other three,
+    #    and the fourth bar is the lowest.
+    
     
     #assertCondition(actualCounts == test$counts)
     #assertCondition(actualPercent == test$percent)
     
+    
 }
-
-testuniCont <- function(x, xName, main){
-    x <-mtcars$hp
-    test <- unicont(x, xName = "Gross horsepower", main = "UniCont Test")
+testUniCont <- function(x) {
     
-    print("/n/n/n")
-    print(test)
-    
-    actualNa=sum(is.na(x))
-    print(actualNa)
-    actualQuantiles=quantiles(x, probs=c(0.25, 0.75, 0.5), na.rm=TRUE)
-    print(actualQuantiles)
-    actualMean=mean(x)
-    print(actualMean)
-    
-    
+    # passes mtcars$hp
+    superEDA(x, main = "Motor Trend Cars")
     
     # Non-graphical checks
-    # 1. Check descriptive stats
-    #    There should be no nas
-    #    min=52.0, Q1=96.5, median=123.0, Q3=180.0, max=335.0
+    # 1. There should be 1 missing value
+    # 2. Check descriptive stats
+    #    min=52.0, Q1=96.5, median=123.0, mean=146.7, Q3=180.0, max=335.0
     #    assertCondition(actualNa == test$na)
     #    assertCondition(actualQuantiles == test$qts)
     
     # Graphical checks  
-    # 1. Check Q-Q Norm plots so that all the points are close to if not on the line
-} 
-
-testBiCatCat <- function(verbose = FALSE) {
+    # 1. Check boxplot so that middle 50% of values fall between 100 and 180 and there
+    #    is a boxplot outlier above 300
+    # 2. Check histogram so that the bars show no bell curve shape
+    # 3. Check Q-Q Norm plots so that all the points are close to if not on the line
     
-    x <- mtcars$cyl
-    y <- mtcars$am
-    test <- biCatCat(x, y, xName = "Cylinders", yName = "AM", main = "BiCatCat Test")
+}
+testBiCatCat <- function(x,y) {
     
-    actualChiSq <- chisq.test(x,y)
+    # passes mtcars$cyl (as factor), mtcars$am (as factor)
+    superEDA(x, y, main = "Motor Trend Cars")
     
     # Non-graphical checks
-    # 1. Check chi sq test 
+    
+    # 1. Check parts of counts table
+    #          y
+    #    x   manual  automatic <NA>
+    #    4       3           8    0
+    #    6       4           3    0
+    #    8      12           2    0
+    #    <NA>    0           0    1
+    
+    # 2. Check parts of percentages table
+    #                  y
+    #    x  manual   automatic 
+    #    4   27.3      72.7
+    #    6   57.1      42.9
+    #    8   85.7      14.3 
+    
+    # 3. Check chi sq test 
     #    X-squared = 8.7407, df = 2, p-value = 0.01265
     #    assertCondition(actualChiSq$statistic == test$chiSq)
     #    assertCondition(actualChiSq$parameter == test$parameter)    
     #    assertCondition(actualChiSq$p.value == test$p)
-    
-    # 2. Check parts of counts table
-    #          y
-    #    x   0  1
-    #    4   3  8
-    #    6   4  3
-    #    8  12  2
-    
-    # 3. Check parts of percentages table
-    #                  y
-    #    x        0       1
-    #    4  0.09375 0.25000
-    #    6  0.12500 0.09375
-    #    8  0.37500 0.06250
     
     #    assertCondition(test$percents[1,2] == .25)
     #    assertCondition(test$percents[2,1] == .125)
@@ -99,48 +91,18 @@ testBiCatCat <- function(verbose = FALSE) {
     # 1. mosaic plot should have percentage of AM = 1 decreasing as cylinders increase.
     #    Cylinders = 8 should be widest of the boxes, followed by 4, then 6
     
+    
 }
-
-testBiCatCont <- function() {
+testBiCatCont <- function(x,y) {
     
-    x <- mtcars$cyl
-    y <- mtcars$hp
-    
-    test <- biCatCont(x, xName = "Cylinders",y = y, yName = "Gross horsepower", main = "Test")
+    # passes mtcars$cyl (as factor), mtcars$hp
+    superEDA(x,y, main = "Motor Trend Cars")
     
     # Non-graphical checks
     # 1. Check descriptive stats
     #    assertCondition(all(test$descStats$'4' == summary(y[which(x == 4)])))
     #    assertCondition(all(test$descStats$'6' == summary(y[which(x == 6)])))
     #    assertCondition(all(test$descStats$'8' == summary(y[which(x == 8)])))
-    
-    # 2. Check robust stats
-    rob4qts <- quantile(y[which(x == 4)], probs=c(0.25, 0.75, 0.5), na.rm = TRUE)
-    rob4 = data.frame(Median=rob4qts[3], 
-                      Q1=rob4qts[1], Q2=rob4qts[2],
-                      IQR=diff(rob4qts[1:2]))
-    
-    rob6qts <- quantile(y[which(x == 6)], probs=c(0.25, 0.75, 0.5), na.rm = TRUE)
-    rob6 = data.frame(Median=rob6qts[3], 
-                      Q1=rob6qts[1], Q2=rob6qts[2],
-                      IQR=diff(rob6qts[1:2]))
-    
-    rob8qts <- quantile(y[which(x == 8)], probs=c(0.25, 0.75, 0.5), na.rm = TRUE)
-    rob8 = data.frame(Median=rob8qts[3], 
-                      Q1=rob8qts[1], Q2=rob8qts[2],
-                      IQR=diff(rob8qts[1:2]))
-    
-    #assertCondition(all(test$robustStats$'4' == rob4))
-    #assertCondition(all(test$robustStats$'6' == rob6))
-    #assertCondition(all(test$robustStats$'8' == rob8))
-    
-    # 3. If categorical is numeric (ordered) - check for correlation
-    
-    if (test$isOrdered) {
-        ordX <- as.numeric(x)
-        assertCondition(test$cor == cor(ordX, y))
-        assertCondition(test$cov == cov(ordX, y))
-    }
     
     # Graphical checks
     # 1. Side-by-side boxplots should show horsepower
@@ -152,13 +114,10 @@ testBiCatCont <- function() {
     #    8 cylinders in light blue above the rest, strech across entire plot.
     
 }
-
-testBiContCat <- function(verbose = FALSE) {
+testBiContCat <- function(x,y) {
     
-    x <- mtcars$hp
-    y <- mtcars$am
-    
-    test <- biContCat(x, y, xName = "Gross horsepower", yName = "Transmission", main = "BiContCat Test")
+    # passes mtcars$hp, mtcars$am
+    superEDA(x,y, main = "Motor Trend Cars")
     
     # Non-graphical checks
     # 1. Descriptive stats for x
@@ -173,20 +132,12 @@ testBiContCat <- function(verbose = FALSE) {
     #    showing the distribution of "automatic" has a wider spead and a smaller mean.
     # 2. Check if the second conditional density plot exists, 
     #    showing a bell-shaped shadow of "manual" starting from 0.25 and ending at 0.
+    
 }
-
-testBiContCont <- function() {
+testBiContCont <- function(x,y) {
     
-    x = mtcars$mpg
-    y = mtcars$disp
-    
-    test = biContCont(x, xName="Miles/(US) gallon", y, yName="Displacement", main="BiContCont Test")
-    print("\n\n\n")
-    print(test)
-    
-    actualCorrelation = cor(x,y)
-    print(actualCorrelation)
-    print(plot(x,y))
+    # passes mtcars$mpg, mtcars$disp
+    superEDA(x,y, main = "Motor Trend Cars")
     
     # Non-graphical checks
     # 1. check correlation
@@ -196,5 +147,4 @@ testBiContCont <- function() {
     # Graphical checks
     # 1. check if the scattor plot shows that there seems to be a non-linear negative relationship.
     # 2. check if the Q-Q plot of x and y looks approximately normal.
-    
 }

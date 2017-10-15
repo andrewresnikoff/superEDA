@@ -153,7 +153,7 @@ uniCont = function(x, xName, main) {
   print(hst)
   
   # Q-Q norm
-  qqnorm(x, xlab=xName); qqline(x)
+  qqn = qqnorm(x, xlab=xName); qqline(x)
   print(qqn)
   invisible(NULL)
 }
@@ -217,7 +217,7 @@ biCatCont = function(x, xName=xName, y=y, yName=yName, main=main){
     
   # Robust stats
   cat("\nRobust stats:\n")
-  qts <- quantile(x, probs=c(0.25, 0.5, 0.75), na.rm = TRUE)
+  ts <- quantile(y, probs=c(0.25, 0.75, 0.5), na.rm = TRUE)
   rob = data.frame(Q1=qts[1], Median=qts[3], 
                    Q3=qts[2], IQR=diff(qts[1:2]))
   print(rob, row.names=FALSE)
@@ -273,7 +273,7 @@ biContCont = function(x, xName=xName, y=y, yName=yName, main=main){
     
     df <- data.frame(x, y)
     
-    # Calculate orrelation
+    # Calculate correlation
     cat("\nCorrelation between", xName, "and", yName, "=", cor(df)[2])
     
     # Scatter plot with smoother curves

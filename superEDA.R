@@ -140,7 +140,7 @@ uniCont = function(x, xName, main) {
   
   # Boxplot
   cat("\n")
-  bpt = ggplot(data=data.frame(x)) + geom_boxplot(aes(x="", y=x)) +
+  bpt = ggplot(data=na.omit(data.frame(x))) + geom_boxplot(aes(x="", y=x)) +
     labs(title=main, x=xName) + theme_minimal()
   print(bpt)
   lenX = length(x)
@@ -251,8 +251,9 @@ biContCat = function(x, xName=xName, y=y, yName=yName, main=main){
     print(pcts)
     
     # Plot overlapping density plots
-    ggplot(df, aes(x = x, fill = y)) + geom_density(aes(group = y), alpha = .25) + 
+    dens <- ggplot(df, aes(x = x, fill = y)) + geom_density(aes(group = y), alpha = .25) + 
         labs(title=main, x=xName) + theme_minimal()
+    plot(dens)
     
     # If the response is binary
     if (nlevels(df$y) == 2){
@@ -267,6 +268,7 @@ biContCat = function(x, xName=xName, y=y, yName=yName, main=main){
 biContCont = function(x, xName=xName, y=y, yName=yName, main=main){
     
     df <- data.frame(x, y)
+    df <- na.omit(df)
     
     # Calculate correlation
     cat("\nCorrelation between", xName, "and", yName, "=", cor(df)[2])

@@ -81,7 +81,7 @@ uniCat = function(x, xName, main) {
   print(cnts)
   # Use helper function for percent table formatting
   cat("\nPercents:\n")
-  pcts = niceTable(cnts)
+  pcts = niceTable(100*prop.table(cnts))
   names(dimnames(pcts)) = NULL
   print(pcts)
   cat("\n")
@@ -154,7 +154,6 @@ uniCont = function(x, xName, main) {
   
   # Q-Q norm
   qqn = qqnorm(x, xlab=xName); qqline(x)
-  print(qqn)
   invisible(NULL)
 }
 

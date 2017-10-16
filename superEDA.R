@@ -225,8 +225,8 @@ biCatCont = function(x, xName=xName, y=y, yName=yName, main=main){
   # Plots
   
   # Boxplot
-  bp <- ggplot(dataframe, aes(x=x, y=y)) + geom_boxplot(aes(x=x, y=y)) +
-      labels(title=main, x=xName, y=yName) + theme_minimal()
+  bp <- ggplot(data=data.frame(x,y), aes(x=xName, y=yName)) + geom_boxplot() +
+      labs(title=main, x=xName, y=yName) + theme_minimal()
   print(bp)
   
   # Scatterplot
@@ -307,7 +307,6 @@ if (exists("testingSuperEDA")) {
 }
 
 testBiCatCont <- function(x,y) {
-  
   # passes mtcars$cyl (as factor), mtcars$hp
   superEDA(x,y, main = "Motor Trend Cars")
   

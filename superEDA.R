@@ -182,7 +182,7 @@ biCatCat = function(x, xName=xName, y=y, yName=yName, main=main) {
   # Counts and Percents
   cat("\nPercent of each level of", yName, "for each level of", xName, "\n")
   cntsNoNA = table(x, y, useNA="no")
-  pcts = niceTable(cntsNoNA)
+  pcts = niceTable(100*prop.table(cntsNoNA))
   names(dimnames(pcts)) = c(xName, yName)
   print(pcts)
   

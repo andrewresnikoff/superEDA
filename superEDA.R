@@ -217,7 +217,7 @@ biCatCont = function(x, xName=xName, y=y, yName=yName, main=main){
     
   # Robust stats
   cat("\nRobust stats:\n")
-  ts <- quantile(y, probs=c(0.25, 0.75, 0.5), na.rm = TRUE)
+  qts <- quantile(y, probs=c(0.25, 0.75, 0.5), na.rm = TRUE)
   rob = data.frame(Q1=qts[1], Median=qts[3], 
                    Q3=qts[2], IQR=diff(qts[1:2]))
   print(rob, row.names=FALSE)
@@ -225,7 +225,7 @@ biCatCont = function(x, xName=xName, y=y, yName=yName, main=main){
   # Plots
   
   # Boxplot
-  bp <- ggplot(data=data.frame) + geom_boxplot(aes(x=x, y=y)) +
+  bp <- ggplot(dataframe, aes(x=x, y=y)) + geom_boxplot(aes(x=x, y=y)) +
       labels(title=main, x=xName, y=yName) + theme_minimal()
   print(bp)
   
@@ -303,5 +303,27 @@ if (exists("testingSuperEDA")) {
   
   # Run all tests
   runAllTests(mtcars)
+  
+}
+
+testBiCatCont <- function(x,y) {
+  
+  # passes mtcars$cyl (as factor), mtcars$hp
+  superEDA(x,y, main = "Motor Trend Cars")
+  
+  # Non-graphical checks
+  # 1. Check descriptive stats
+  #  assertCondition(all(test$descStats$'4' == summary(y[which(x == 4)])))
+  #  assertCondition(all(test$descStats$'6' == summary(y[which(x == 6)])))
+  #  assertCondition(all(test$descStats$'8' == summary(y[which(x == 8)])))
+  
+  # Graphical checks
+  # 1. Side-by-side boxplots should show horsepower
+  #    ranges from 50-125 for 4cyl, 120-140 for 6cyl (with a boxplot outlier at 175)
+  #    and 155-340 for 8cyl. The boxes (middle 50% of values) should not be overlapping.
+  # 2. Scatter plot should show 3 colors representing each possible number of cylinders
+  #    4 cylinders should be in black mostly towards bottom right (lower hp, higher index)
+  #    6 cylinders should be in green mostly towards bottom left (a little higher than black, straight line at 100hp)
+  #    8 cylinders in light blue above the rest, strech across entire plot.
   
 }
